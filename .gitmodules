@@ -1,0 +1,3 @@
+[submodule "roles/ubuntu"]
+	path = roles/ubuntu
+	url = https://github.com/souenzzo/role-ubuntu

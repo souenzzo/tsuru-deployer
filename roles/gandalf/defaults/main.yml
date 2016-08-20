@@ -1,0 +1,8 @@
+---
+deps:
+- git
+- golang
+- make
+data_dir: "/var/lib/gandalf/repositories"
+repo: "http://github.com/tsuru/gandalf.git"
+version: "master"

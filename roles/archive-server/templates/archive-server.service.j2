@@ -1,9 +1,10 @@
 [Unit]
-Description=Archive daemon
+Description=A daemon for serving git archives over HTTP
 
 [Service]
 ExecStart=/usr/bin/archive-server -read-http=0.0.0.0:6060 -write-http=0.0.0.0:6161 -mongodb=127.0.0.1:27017
-User=gandalf
+User={{ runner.name }}
+WorkingDirectory={{ data_dir }}
 
 [Install]
 WantedBy=multi-user.target

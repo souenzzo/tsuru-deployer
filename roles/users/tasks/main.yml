@@ -1,0 +1,15 @@
+---
+- debug: var=make
+- name: Create groups
+  group:
+    name: "{{ item.group }}"
+    system: "{{ item.system }}"
+  with_items: "{{ make }}"
+
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    system: "{{ item.system }}"
+    group: "{{ item.group }}"
+    home: "{{ item.home }}"
+  with_items: "{{ make }}"

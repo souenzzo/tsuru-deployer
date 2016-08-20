@@ -3,7 +3,7 @@ Description=Gandalf
 
 [Service]
 ExecStart=/usr/bin/gandalf-webserver
-User=gandalf
+User={{ runner.name }}
 
 [Install]
 WantedBy=multi-user.target

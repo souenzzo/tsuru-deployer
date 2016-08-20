@@ -1,0 +1,9 @@
+[Unit]
+Description=Git daemon
+
+[Service]
+ExecStart=/usr/bin/git daemon --base-path={{ data_dir }} --export-all
+User={{ runner.name }}
+
+[Install]
+WantedBy=multi-user.target

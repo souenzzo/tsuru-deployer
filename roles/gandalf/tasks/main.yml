@@ -1,0 +1,55 @@
+---
+- name: Install deps
+  apt:
+    name: "{{ deps }}"
+
+- name: Get gandalf
+  become: yes
+  become_user: "{{ builder.name }}"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ builder.home }}/src/github.com/tsuru/gandalf"
+    version: "{{ version }}"
+
+- name: Build gandalf
+  become: yes
+  become_user: "{{ builder.name }}"
+  shell: "GOPATH={{ builder.home }} make binaries"
+  args:
+    chdir: "{{ builder.home }}/src/github.com/tsuru/gandalf"
+    creates: "build"
+
+- name: Install gandalf binaries
+  copy:
+    remote_src: yes
+    src: "{{ builder.home }}/src/github.com/tsuru/gandalf/build/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
+    mode: "0755"
+  with_items:
+  - gandalf-webserver
+  - gandalf-ssh
+
+- name: Install gandalf config
+  template:
+    src: "./templates/gandalf.conf.j2"
+    dest: "/etc/gandalf.conf"
+
+- name: Install systemd service
+  template:
+    src: "./templates/gandalf.service.j2"
+    dest: "/etc/systemd/system/gandalf.service"
+
+- name: Create workdir
+  file:
+    name: "{{ data_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ runner.name }}"
+    group: "{{ runner.name }}"
+
+- name: Enable systemd service
+  service:
+    name: gandalf
+    enabled: yes
+    state: started
+

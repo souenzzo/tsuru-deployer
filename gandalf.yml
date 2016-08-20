@@ -1,0 +1,45 @@
+---
+- name: Gandalf server (mongodb/gandalf/archive-server/git-daemon)
+  user: root
+  hosts: tsuru
+  vars_files:
+  - "./group_vars/users.yml"
+  roles:
+  - name: ubuntu
+    repository: "http://ubuntu.c3sl.ufpr.br/ubuntu/"
+    components:
+    - main
+    - restricted
+    - universe
+    - multiverse
+    channels:
+    - updates
+    install:
+    - vim
+    - sudo
+    - htop
+    - mongodb
+
+  - name: "users"
+    make:
+    - "{{ users.build }}"
+    - "{{ users.gandalf }}"
+
+  - name: "gandalf"
+    builder: "{{ users.build }}"
+    runner: "{{ users.gandalf }}"
+    data_dir: /srv/repo
+
+  - name: "git-daemon"
+    runner: "{{ users.gandalf }}"
+    data_dir: /srv/repo
+
+  - name: "archive-server"
+    builder: "{{ users.build }}"
+    runner: "{{ users.gandalf }}"
+    data_dir: /srv/repo
+
+
+
+
+

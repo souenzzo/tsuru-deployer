@@ -1,0 +1,12 @@
+---
+users:
+  build:
+    name: build
+    group: build
+    home: /var/build
+    system: yes
+  gandalf:
+    name: gandalf
+    group: gandalf
+    home: /var/gandalf
+    system: yes
