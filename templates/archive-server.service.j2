@@ -1,0 +1,9 @@
+[Unit]
+Description=Archive daemon
+
+[Service]
+ExecStart=/usr/bin/archive-server -read-http=0.0.0.0:6060 -write-http=0.0.0.0:6161 -mongodb=127.0.0.1:27017
+User=gandalf
+
+[Install]
+WantedBy=multi-user.target

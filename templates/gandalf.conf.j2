@@ -1,0 +1,18 @@
+
+bin-path: /usr/bin/gandalf-ssh
+database:
+  url: 127.0.0.1:27017
+  name: gandalf
+git:
+  bare:
+    location: /var/lib/gandalf/repositories
+    template: /home/git/bare-template
+host: localhost
+bind: "0.0.0.0:8000"
+uid: gandalf
+api:
+  request:
+    maxMemory: 2097152
+repository:
+  tempDir: /tmp
+

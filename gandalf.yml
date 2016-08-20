@@ -1,0 +1,126 @@
+---
+- name: Tsuru deployer
+  user: root
+  hosts: tsuru
+  tasks:
+  - name: Install deps
+    pacman:
+      name:
+        - git
+        - go
+        - mongodb
+        - sudo ## for ansible
+        - make
+        - godep
+
+  - name: Create a group for build user
+    group:
+      name: "{{ item }}"
+    with_items:
+      - build
+      - gandalf
+
+  - name: Create a build user
+    user:
+      name: build
+      group: build
+
+  - name: Create gandalf user
+    user:
+      name: gandalf
+      group: gandalf
+      home: /var/lib/gandalf
+
+  - name: Set a gopath
+    lineinfile:
+      create: yes
+      dest: "/etc/profile.d/go.sh"
+      line: "export GOPATH=$HOME"
+
+  - name: Get gandalf
+    become: yes
+    become_user: build
+    git:
+      repo: "http://github.com/tsuru/gandalf.git"
+      dest: "/home/build/src/github.com/tsuru/gandalf"
+      version: "master"
+
+  - name: Build gandalf
+    become: yes
+    become_user: build
+    shell: "GOPATH=/home/build make binaries"
+    args:
+      chdir: "/home/build/src/github.com/tsuru/gandalf"
+      creates: "build"
+
+  - name: Install gandalf binaries
+    copy:
+      remote_src: yes
+      src: "/home/build/src/github.com/tsuru/gandalf/build/{{ item }}"
+      dest: "/usr/bin/{{ item }}"
+      mode: "0755"
+    with_items:
+      - gandalf-webserver
+      - gandalf-ssh
+  
+  - name: Get archive-server
+    become: yes
+    become_user: build
+    git:
+      repo: "http://github.com/tsuru/archive-server.git"
+      dest: "/home/build/src/github.com/tsuru/archive-server"
+      version: "master"
+
+  - name: Build archive-server
+    become: yes
+    become_user: build
+    shell: "GOPATH=/home/build go install"
+    args:
+      chdir: "/home/build/src/github.com/tsuru/archive-server"
+      creates: "/home/build/bin/archive-server"
+
+  - name: Install gandalf binaries
+    copy:
+      remote_src: yes
+      src: "/home/build/bin/{{ item }}"
+      dest: "/usr/bin/{{ item }}"
+      mode: "0755"
+    with_items:
+      - archive-server
+
+  - name: Install gandalf config
+    template:
+      src: "./templates/gandalf.conf.j2"
+      dest: "/etc/gandalf.conf"
+
+  - name: Install systemd service
+    template:
+      src: "./templates/{{ item }}.service.j2"
+      dest: "/etc/systemd/system/{{ item }}.service"
+    with_items:
+      - gandalf
+      - git-daemon
+      - archive-server
+
+  - name: Create workdir
+    file:
+      name: /var/lib/gandalf/repositories
+      state: directory
+      owner: gandalf
+      group: gandalf
+
+  - name: Enable systemd service
+    service:
+      name: "{{ item }}"
+      enabled: yes
+      state: started
+    with_items:
+      - mongodb
+      - gandalf
+      - git-daemon
+      - archive-server
+
+
+
+
+

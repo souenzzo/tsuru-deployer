@@ -1,0 +1,2 @@
+[tsuru]
+localhost:2222 ansible_python_interpreter=/usr/bin/python2

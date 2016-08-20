@@ -1,0 +1,9 @@
+[Unit]
+Description=Git daemon
+
+[Service]
+ExecStart=/usr/bin/git daemon --base-path=/var/lib/gandalf/repositories --export-all
+User=gandalf
+
+[Install]
+WantedBy=multi-user.target
