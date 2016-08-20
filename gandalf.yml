@@ -4,16 +4,15 @@
   hosts: tsuru
   tasks:
   - name: Install deps
-    pacman:
+    apt:
       name:
         - git
-        - go
+        - golang
         - mongodb
         - sudo ## for ansible
         - make
-        - godep
 
-  - name: Create a group for build user
+  - name: Create groups
     group:
       name: "{{ item }}"
     with_items:
