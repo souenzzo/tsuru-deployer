@@ -1,0 +1,28 @@
+---
+- name: Install deps
+  apt:
+    name: "{{ deps }}"
+
+- name: Get sources@{{ version }}
+  become: yes
+  become_user: "{{ builder.name }}"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ builder.home }}/src/github.com/tsuru/tsuru-client"
+    version: "{{ version }}"
+
+- name: Build binaries
+  become: yes
+  become_user: "{{ builder.name }}"
+  shell: "GOPATH={{ builder.home }} go install"
+  args:
+    chdir: "{{ builder.home }}/src/github.com/tsuru/tsuru-client/tsuru"
+    creates: "{{ builder.home }}/bin/tsuru"
+
+- name: Install binaries
+  copy:
+    remote_src: yes
+    src: "{{ builder.home }}/bin/tsuru"
+    dest: "/usr/bin/tsuru"
+    mode: "0755"
+

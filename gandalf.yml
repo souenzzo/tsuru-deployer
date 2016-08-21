@@ -19,11 +19,13 @@
     - sudo
     - htop
     - mongodb
+    - redis-server
 
   - name: "users"
     make:
     - "{{ users.build }}"
     - "{{ users.gandalf }}"
+
 
   - name: "gandalf"
     builder: "{{ users.build }}"
@@ -38,6 +40,19 @@
     builder: "{{ users.build }}"
     runner: "{{ users.gandalf }}"
     data_dir: /srv/repo
+
+  - name: "tsurud"
+    builder: "{{ users.build }}"
+    runner: "{{ users.gandalf }}"
+
+  - name: "planb"
+    builder: "{{ users.build }}"
+    runner: "{{ users.gandalf }}"
+
+  - name: "tsuru"
+    builder: "{{ users.build }}"
+
+
 
 
 

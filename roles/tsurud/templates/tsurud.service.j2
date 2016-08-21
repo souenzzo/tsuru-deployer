@@ -1,0 +1,9 @@
+[Unit]
+Description=Docker-based Platform as a Service (PaaS)
+
+[Service]
+ExecStart=/usr/bin/tsurud api
+User={{ runner.name }}
+
+[Install]
+WantedBy=multi-user.target

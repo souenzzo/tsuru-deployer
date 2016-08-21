@@ -1,0 +1,37 @@
+---
+- name: "get sources@{{version}}"
+  become: yes
+  become_user: "{{ builder.name }}"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ builder.home }}/src/github.com/tsuru/planb"
+    version: "{{ version }}"
+
+- name: Build
+  become: yes
+  become_user: "{{ builder.name }}"
+  shell: "GOPATH={{ builder.home }} go install"
+  args:
+    chdir: "{{ builder.home }}/src/github.com/tsuru/planb"
+    creates: "{{ builder.home }}/bin/planb"
+
+- name: Install binaries
+  copy:
+    remote_src: yes
+    src: "{{ builder.home }}/bin/planb"
+    dest: "/usr/bin/planb"
+    mode: "0755"
+
+- name: Install systemd service
+  template:
+    src: "./templates/planb.service.j2"
+    dest: "/etc/systemd/system/planb.service"
+
+- name: Enable and start service
+  service:
+    name: planb
+    enabled: yes
+    state: started
+
+  
+

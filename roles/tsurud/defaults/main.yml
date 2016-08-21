@@ -1,0 +1,7 @@
+---
+deps:
+- git
+- golang
+- make
+repo: "http://github.com/tsuru/tsuru.git"
+version: "master"

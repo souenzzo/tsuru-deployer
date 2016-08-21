@@ -1,0 +1,10 @@
+[Unit]
+Description=A distributed HTTP and websocket proxy inspired by Hipache
+
+[Service]
+ExecStart=/usr/bin/planb
+User={{ runner.name }}
+WorkingDirectory={{ runner.home }}
+
+[Install]
+WantedBy=multi-user.target
