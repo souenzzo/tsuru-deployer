@@ -2,5 +2,15 @@
 deps:
 - git
 - golang
+- make
 repo: "http://github.com/tsuru/tsuru.git"
 version: "master"
+mongo_host: 127.0.0.1
+mongo_port: 27017
+redis_host: 127.0.0.1
+redis_port: 6379
+gandalf_url: "http://127.0.0.1:8000"
+deploy_cmd: null
+registry_url: 127.0.0.1:2376
+hipache_domain: "localhost.localdomain"
+tsuru_uri: "localhost.localdomain"

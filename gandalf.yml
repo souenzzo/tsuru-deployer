@@ -20,12 +20,13 @@
     - htop
     - mongodb
     - redis-server
+    - docker.io
+    - docker-registry
 
   - name: "users"
     make:
     - "{{ users.build }}"
     - "{{ users.gandalf }}"
-
 
   - name: "gandalf"
     builder: "{{ users.build }}"
@@ -41,16 +42,25 @@
     runner: "{{ users.gandalf }}"
     data_dir: /srv/repo
 
-  - name: "tsurud"
+  - name: "tsuru"
     builder: "{{ users.build }}"
     runner: "{{ users.gandalf }}"
+    git_template_dir: "/tmp/"
 
   - name: "planb"
     builder: "{{ users.build }}"
     runner: "{{ users.gandalf }}"
 
-  - name: "tsuru"
+  - name: "tsuru-client"
     builder: "{{ users.build }}"
+
+  tasks:
+  - name: Docker tweak
+    lineinfile:
+      dest: /lib/systemd/system/docker.service
+      regexp: ^ExecStart=
+      line: ExecStart=/usr/bin/dockerd -H fd:// tcp://0.0.0.0:2376
+
 
 
 

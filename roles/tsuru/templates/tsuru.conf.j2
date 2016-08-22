@@ -1,0 +1,48 @@
+listen: "0.0.0.0:8080"
+host: http://127.0.0.1:8080
+debug: true
+admin-team: admin
+auth:
+  user-registration: true
+  scheme: native
+database:
+  url: {{ mongo_host }}:{{ mongo_port }}
+  name: tsurudb
+pubsub:
+  redis-host: {{ redis_host }}
+  redis-port: {{ redis_port }}
+queue:
+  mongo-url: {{ mongo_host }}:{{ mongo_port }}
+  mongo-database: queuedb
+git:
+  api-server: {{ gandalf_url }}
+provisioner: docker
+repo-manager: gandalf
+docker:
+  router: hipache
+  collection: docker_containers
+  repository-namespace: tsuruns
+  deploy-cmd: {{ deploy_cmd }}
+  bs:
+    image: tsuru/bs:1
+    reporter-interval: 10
+    socker: /var/run/docker.sock
+  cluster:
+    storage: mongodb
+    mongo-url: {{ mongo_host }}:{{ mongo_port }}
+    mongo-database: dockercluster
+  port-allocator: tsuru
+  registry: {{ registry_url }}
+  run-cmd:
+    bin: /var/lib/tsuru/start
+    port: "8888"
+  ssh:
+    add-key-cmd: /var/lib/tsuru/add-key
+    public-key: {{ runner.home }}/.ssh/id_rsa.pub
+    user: {{ runner.name }}
+routers:
+  hipache:
+    type: hipache
+    domain: {{ hipache_domain }}
+    redis-server: {{ redis_host }}:{{ redis_port }}
+
